@@ -47,10 +47,11 @@ function ENTER
 
 function BEEP
 {
-	for i in {1..10}
+	for i in {1..3}
 	do
-		printf '\7'
-		sleep 0.12
+		#printf '\7'
+		paplay beep-30.wav
+		sleep 0.5
 	done
 }
 
