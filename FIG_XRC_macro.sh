@@ -197,8 +197,8 @@ do
 		if [ $RC == 1 ]; then
 			BEEP
 			#spd-say -t female3 -r -100 -l pt-pt "xrc da FIG com mensagem de $erros"
-			zenity --info --text="FIG VERIFIQUE: $erros"
-			zenity --question --text="DESEJA AGUARDAR 10MIN SEM ALERTAS?"
+			zenity --info --text="$now FIG VERIFIQUE: $erros"
+			zenity --question --text="$now DESEJA AGUARDAR 10MIN SEM ALERTAS?"
 			if [ $? == 0 ]; then
 				echo "MACRO ENTROU EM MODO LOOP 10MIN, SERÁ RETOMADO DEPOIS COM MENSAGEM POPUP"
 				for value in {1..10} #20 iterações vezes 30 segundos de sleep = 10 minutos

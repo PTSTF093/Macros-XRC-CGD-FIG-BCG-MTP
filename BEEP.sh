@@ -17,7 +17,7 @@ function BEEP
 	for i in {1..3}
 	do
 		#printf '\7'
-		paplay beep-30.wav
+		paplay beep-02.wav
 		sleep 0.5
 	done
 }
