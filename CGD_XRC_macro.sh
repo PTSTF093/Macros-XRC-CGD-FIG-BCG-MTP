@@ -131,6 +131,32 @@ STRING "$user"
 ENTER
 STRING "$password"
 ENTER
+
+#verificar se password correta
+FIND "SECURITY"
+RC=$?
+if [ $RC == 1 ]; then
+	BEEP
+	zenity --info --text="PASSWORD INVÁLIDA!!!"
+	exit
+fi
+#user correto?
+FIND "INVALID"
+RC=$?
+if [ $RC == 1 ]; then
+	BEEP
+	zenity --info --text="USER INVÁLIDO!!!"
+	exit
+fi
+#ALREADY logged
+FIND "ALREADY"
+RC=$?
+if [ $RC == 1 ]; then
+	BEEP
+	zenity --info --text="ALREADY LOGGED ON!!!"
+	exit
+fi
+
 #aparece ***
 ENTER
 ENTER
@@ -154,7 +180,7 @@ do
 	hora_emulador=$(GETSTR 21 74 5)
 	hm=$(date --date="$hora_emulador" +"%s")
 	
-	echo "nou+1 $now_M1 now-1 $now_m1 now $now emulador $hora_emulador hm $hm"
+	echo "now+1 $now_M1 now-1 $now_m1 now $now emulador $hora_emulador hm $hm"
 
 	#
 	clear
@@ -197,6 +223,8 @@ do
 		if [ $RC == 1 ]; then
 			BEEP
 			#spd-say -t female3 -r -100 -l pt-pt "xrc da CGD com mensagem de $erros"
+			#registar em LOG
+			echo "$now CGD VERIFIQUE: $erros" >> XRC_LOG.txt
 			zenity --info --text="$now CGD VERIFIQUE: $erros"
 			zenity --question --text="$now DESEJA AGUARDAR 10MIN SEM ALERTAS?"
 			if [ $? == 0 ]; then
@@ -209,6 +237,7 @@ do
 					ENTER
 					sleep 30
 				done
+				BEEP
 				zenity --info --text "MACRO SERÁ RETOMADA AGORA"
 			fi
 		fi

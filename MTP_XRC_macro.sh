@@ -138,6 +138,32 @@ STRING "$user"
 ENTER
 STRING "$password"
 ENTER
+
+#verificar se password correta
+FIND "SECURITY"
+RC=$?
+if [ $RC == 1 ]; then
+	BEEP
+	zenity --info --text="PASSWORD INVÁLIDA!!!"
+	exit
+fi
+#user correto?
+FIND "INVALID"
+RC=$?
+if [ $RC == 1 ]; then
+	BEEP
+	zenity --info --text="USER INVÁLIDO!!!"
+	exit
+fi
+#ALREADY logged
+FIND "ALREADY"
+RC=$?
+if [ $RC == 1 ]; then
+	BEEP
+	zenity --info --text="ALREADY LOGGED ON!!!"
+	exit
+fi
+
 #aparece ***
 ENTER
 ENTER
@@ -204,6 +230,7 @@ do
 		if [ $RC == 1 ]; then
 			BEEP
 			#spd-say -t female3 -r -100 -l pt-pt "xrc do BCG com mensagem de $erros"
+			echo "$now MTP VERIFIQUE: $erros" >> XRC_LOG.txt
 			zenity --info --text="$now MTP VERIFIQUE: $erros"
 			zenity --question --text="$now DESEJA AGUARDAR 10MIN SEM ALERTAS?"
 			if [ $? == 0 ]; then
@@ -215,6 +242,7 @@ do
 					ENTER
 					sleep 30
 				done
+				BEEP
 				zenity --info --text "MACRO SERÁ RETOMADA AGORA"
 			fi
 		fi
