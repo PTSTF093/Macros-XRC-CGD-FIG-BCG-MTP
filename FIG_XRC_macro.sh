@@ -9,6 +9,9 @@
 #
 #
 #
+me=$$
+ps -ef | grep 'FIG_XRC_macro.sh' | awk -v me=$me '$2 != me {print $2}' | xargs kill
+
 /usr/bin/x3270 -script -scriptport 6000 -model 2 -title FIG -proxy socks5:socks.lsb.esni.ibm.com:1080 192.168.199.33:23 &
 
 pid=$!

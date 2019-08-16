@@ -9,6 +9,9 @@
 #
 #
 #
+me=$$
+ps -ef | grep 'BCG_XRC_macro.sh' | awk -v me=$me '$2 != me {print $2}' | xargs kill
+
 /usr/bin/x3270 -script -scriptport 7000 -model 2 -title BCG -proxy socks5:socks.lsb.esni.ibm.com:1080 192.168.199.22:23 &
 
 pid=$!

@@ -9,6 +9,8 @@
 #
 #
 #
+me=$$
+ps -ef | grep 'MTP_XRC_macro.sh' | awk -v me=$me '$2 != me {print $2}' | xargs kill
 
 /usr/bin/x3270 -script -scriptport 5500 -model 2 -title MTP -proxy socks5:socks.lsb.esni.ibm.com:1080 192.168.199.42:23 &
 
@@ -255,11 +257,11 @@ do
 					echo "$now PROD#SUS encontrado *** e dado ENTER" >> XRC_LOG.txt
 					echo $(PRINTSCREEN) >> XRC_LOG.txt
 				else
-					zenity --info --text="$now MTP VERIFIQUE: PROD#SUS enviado corretamente? interrompido? continue de onde ficou, esta macro vai esperar 60s para a operação ter tempo de introduzir comandos nesta consola."
-					echo "$now PROD#SUS sem ***, entrou em espera 60s" >> XRC_LOG.txt
+					zenity --info --text="$now MTP VERIFIQUE: PROD#SUS enviado corretamente? interrompido? continue de onde ficou, esta macro vai esperar 5 minutos para a operação ter tempo de introduzir comandos nesta consola."
+					echo "$now PROD#SUS sem ***, entrou em espera 5min" >> XRC_LOG.txt
 					echo $(PRINTSCREEN) >> XRC_LOG.txt
-					sleep 60
-					echo "$now PROD#SUS sem ***, saiu da espera 60s" >> XRC_LOG.txt
+					sleep 60*5
+					echo "$now PROD#SUS sem ***, saiu da espera 5min" >> XRC_LOG.txt
 					echo $(PRINTSCREEN) >> XRC_LOG.txt
 				fi
 			fi
