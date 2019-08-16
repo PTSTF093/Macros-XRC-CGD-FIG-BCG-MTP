@@ -187,7 +187,9 @@ do
 	hora_emulador=$(GETSTR 21 74 5)
 	hm=$(date --date="$hora_emulador" +"%s")
 	
-	echo "nou+1 $now_M1 now-1 $now_m1 now $now emulador $hora_emulador hm $hm"
+	echo "now+1 $now_M1 now-1 $now_m1 now $now emulador $hora_emulador hm $hm"
+	echo "now+1 $now_M1 now-1 $now_m1 now $now emulador $hora_emulador hm $hm"
+	echo "now+1 $now_M1 now-1 $now_m1 now $now emulador $hora_emulador hm $hm"
 
 	#
 	clear
@@ -212,7 +214,56 @@ do
 		echo "$hora_emulador diferente de $now"
 		BEEP
 		zenity --info --text "MTP - Hora do emulador não está a atualizar $now != $hora_emulador" &
+		echo "$now MTP - Hora do emulador não está a atualizar $now != $hora_emulador" >> XRC_LOG.txt
 		#exit 8
+	fi
+	
+	###########################
+	###########################
+	###########################
+	###########################
+	#	PROD#SUS
+	#
+	###########################
+	###########################
+	###########################
+	
+	#verificar se hora = 0 e se minutos < 6
+	HH3270=$(echo $hora_emulador | cut -d':' -f 1)
+	MM3270=$(echo $hora_emulador | cut -d':' -f 2)
+	if [[ "$HH3270" -eq "00" ]] && [[ "$MM3270" -gt "05" ]] ; then
+	#if [[ "$HH3270" -eq "13" ]] && [[ "$MM3270" -gt "59" ]] ; then
+		FLAG_PROD_SUS=0
+	fi
+	
+	if [[ "$HH3270" -eq "00" ]] && [[ "$MM3270" -lt "06" ]] ; then
+	#if [[ "$HH3270" -eq "13" ]] && [[ "$MM3270" -lt "58" ]] ; then
+		if [[ $FLAG_PROD_SUS -eq 0 ]] ; then
+			BEEP
+			echo "$now HORA PROD#SUS" >> XRC_LOG.txt
+			if zenity --question --text="ESTÁ NA HORA DE EXECUTAR O PROD#SUS QUER LANÇAR AUTOMATICAMENTE O COMANDO?"; then
+				FLAG_PROD_SUS=1
+				#FAZER O PROD"SUS
+				#zenity --info --text="You pressed \"Yes\"!"
+				STRING "PROD#SUS"
+				ENTER
+				echo "$now PROD#SUS AUTOMÁTICO ENVIADO" >> XRC_LOG.txt
+				sleep 5
+				FIND "***"
+				if [ $? == 1 ] ; then
+					ENTER
+					echo "$now PROD#SUS encontrado *** e dado ENTER" >> XRC_LOG.txt
+					echo $(PRINTSCREEN) >> XRC_LOG.txt
+				else
+					zenity --info --text="$now MTP VERIFIQUE: PROD#SUS enviado corretamente? interrompido? continue de onde ficou, esta macro vai esperar 60s para a operação ter tempo de introduzir comandos nesta consola."
+					echo "$now PROD#SUS sem ***, entrou em espera 60s" >> XRC_LOG.txt
+					echo $(PRINTSCREEN) >> XRC_LOG.txt
+					sleep 60
+					echo "$now PROD#SUS sem ***, saiu da espera 60s" >> XRC_LOG.txt
+					echo $(PRINTSCREEN) >> XRC_LOG.txt
+				fi
+			fi
+		fi
 	fi
 	
 	# fazer find no ecrã a procura das strings em stringa[]
@@ -235,6 +286,7 @@ do
 			zenity --question --text="$now DESEJA AGUARDAR 10MIN SEM ALERTAS?"
 			if [ $? == 0 ]; then
 				echo "MACRO ENTROU EM MODO LOOP 10MIN, SERÁ RETOMADO DEPOIS COM MENSAGEM POPUP"
+				echo "$now MACRO ENTROU EM MODO LOOP 10MIN" >> XRC_LOG.txt
 				for value in {1..10} #20 iterações vezes 30 segundos de sleep = 10 minutos
 				do
 					ENTER
@@ -244,6 +296,7 @@ do
 				done
 				BEEP
 				zenity --info --text "MACRO SERÁ RETOMADA AGORA"
+				echo "$now MACRO SAIU DE MODO LOOP 10MIN" >> XRC_LOG.txt
 			fi
 		fi
 	done
