@@ -10,12 +10,30 @@
 #
 #
 me=$$
-ps -ef | grep 'MTP_XRC_macro.sh' | awk -v me=$me '$2 != me {print $2}' | xargs kill
+function prelimpeza() 
+{
+	#ps -ef | grep 'zenity' | awk '{print $2}' | xargs kill
+	ps -ef | grep 'title MTP' | awk '{print $2}' | xargs kill
+	ps -ef | grep 'MTP_XRC_macro.sh' | awk -v me=$me '$2 != me {print $2}' | xargs kill
+}
+
+function matanca() 
+{
+	#ps -ef | grep 'zenity' | awk '{print $2}' | xargs kill
+	ps -ef | grep 'title MTP' | awk '{print $2}' | xargs kill
+	#ps -ef | grep 'MTP_XRC_macro.sh' | awk '{print $2}' | xargs kill
+	for pid in $(ps -ef | awk '/MTP_XRC_macro.sh/ {print $2}'); do kill -9 $pid; done
+
+}
+
+#limpar outros processos duplicados.
+prelimpeza
 
 /usr/bin/x3270 -script -scriptport 5500 -model 2 -title MTP -proxy socks5:socks.lsb.esni.ibm.com:1080 192.168.199.42:23 &
 
 pid=$!
 trap "kill $pid" EXIT
+trap matanca 1 2 3 6
 
 	# "ACCIONAR O SUPORTE TECNICO"
 	# "SUSPENDED                 "

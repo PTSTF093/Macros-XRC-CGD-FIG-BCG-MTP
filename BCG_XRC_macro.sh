@@ -10,12 +10,29 @@
 #
 #
 me=$$
-ps -ef | grep 'BCG_XRC_macro.sh' | awk -v me=$me '$2 != me {print $2}' | xargs kill
+function prelimpeza() 
+{
+	#ps -ef | grep 'zenity' | awk '{print $2}' | xargs kill
+	ps -ef | grep 'title BCG' | awk '{print $2}' | xargs kill
+	ps -ef | grep 'BCG_XRC_macro.sh' | awk -v me=$me '$2 != me {print $2}' | xargs kill
+}
 
+function matanca() 
+{
+	#ps -ef | grep 'zenity' | awk '{print $2}' | xargs kill
+	ps -ef | grep 'title BCG' | awk '{print $2}' | xargs kill
+	#ps -ef | grep 'BCG_XRC_macro.sh' | awk '{print $2}' | xargs kill
+	for pid in $(ps -ef | awk '/BCG_XRC_macro.sh/ {print $2}'); do kill -9 $pid; done
+
+}
+
+#limpar outros processos duplicados.
+prelimpeza
 /usr/bin/x3270 -script -scriptport 7000 -model 2 -title BCG -proxy socks5:socks.lsb.esni.ibm.com:1080 192.168.199.22:23 &
 
 pid=$!
 trap "kill $pid" EXIT
+trap matanca 1 2 3 6
 
 stringa=( "SUSPENDED" "NO DUMP DATA SETS" "ACCIONAR O SUPORTE TECNICO" "ERRO GRAVE" "Suporte Tecnico" "SUPORTE TECNICO" )
 
