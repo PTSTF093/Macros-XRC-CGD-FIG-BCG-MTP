@@ -29,7 +29,7 @@ function matanca()
 #limpar outros processos duplicados.
 prelimpeza
 
-/usr/bin/x3270 -script -scriptport 5000 -model 2 -title CGD -proxy socks5:socks.lsb.esni.ibm.com:1080 192.168.199.25:23 &
+/usr/bin/x3270 -script -scriptport 5000 -model 2 -title CGD -cafile $HOME/certificados/GrupoCGDRootCA.pem -noverifycert -proxy socks5:socks.lsb.esni.ibm.com:1080 192.168.199.25:992 &
 
 pid=$!
 trap "kill $pid" EXIT
