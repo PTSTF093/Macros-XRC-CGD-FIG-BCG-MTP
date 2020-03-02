@@ -92,6 +92,13 @@ containsElement () {
   return 0
 }
 
+function MOVECURSOR
+{
+	x=$1
+	y=$2
+	X "movecursor $x $y"
+}
+
 #
 #
 ########   procurar no ecrã se contém a string
@@ -249,42 +256,47 @@ do
 	###########################
 	
 	#verificar se hora = 0 e se minutos < 6
-	#HH3270=$(echo $hora_emulador | cut -d':' -f 1)
-	#MM3270=$(echo $hora_emulador | cut -d':' -f 2)
-	#if [[ "$HH3270" -eq "00" ]] && [[ "$MM3270" -gt "05" ]] ; then
+	HH3270=$(echo $hora_emulador | cut -d':' -f 1)
+	MM3270=$(echo $hora_emulador | cut -d':' -f 2)
+	if [[ "$HH3270" -eq "00" ]] && [[ "$MM3270" -gt "05" ]] ; then
 	#if [[ "$HH3270" -eq "13" ]] && [[ "$MM3270" -gt "59" ]] ; then
-	#	FLAG_PROD_SUS=0
-	#fi
-	#
-	#if [[ "$HH3270" -eq "00" ]] && [[ "$MM3270" -lt "06" ]] ; then
+		FLAG_PROD_SUS=0
+	fi
+	
+	if [[ "$HH3270" -eq "00" ]] && [[ "$MM3270" -lt "06" ]] ; then
 	#if [[ "$HH3270" -eq "13" ]] && [[ "$MM3270" -lt "58" ]] ; then
-	#	if [[ $FLAG_PROD_SUS -eq 0 ]] ; then
-	#		BEEP
-	#		echo "$now HORA PROD#SUS" >> XRC_LOG.txt
-	#		if zenity --question --text="ESTÁ NA HORA DE EXECUTAR O PROD#SUS QUER LANÇAR AUTOMATICAMENTE O COMANDO?"; then
-	#			FLAG_PROD_SUS=1
-	#			#FAZER O PROD"SUS
-	#			#zenity --info --text="You pressed \"Yes\"!"
-	#			STRING "PROD#SUS"
-	#			ENTER
-	#			echo "$now PROD#SUS AUTOMÁTICO ENVIADO" >> XRC_LOG.txt
-	#			sleep 5
-	#			FIND "***"
-	#			if [ $? == 1 ] ; then
-	#				ENTER
-	#				echo "$now PROD#SUS encontrado *** e dado ENTER" >> XRC_LOG.txt
-	#				echo $(PRINTSCREEN) >> XRC_LOG.txt
-	#			else
-	#				zenity --info --text="$now MTP VERIFIQUE: PROD#SUS enviado corretamente? interrompido? continue de onde ficou, esta macro vai esperar 5 minutos para a operação ter tempo de introduzir comandos nesta consola."
-	#				echo "$now PROD#SUS sem ***, entrou em espera 5min" >> XRC_LOG.txt
-	#				echo $(PRINTSCREEN) >> XRC_LOG.txt
-	#				sleep 60*5
-	#				echo "$now PROD#SUS sem ***, saiu da espera 5min" >> XRC_LOG.txt
-	#				echo $(PRINTSCREEN) >> XRC_LOG.txt
-	#			fi
-	#		fi
-	#	fi
-	#fi
+		if [[ $FLAG_PROD_SUS -eq 0 ]] ; then
+			BEEP
+			echo "$now HORA PROD#SUS" >> XRC_LOG.txt
+			if zenity --question --text="ESTÁ NA HORA DE EXECUTAR O PROD#SUS QUER LANÇAR AUTOMATICAMENTE O COMANDO?"; then
+				FLAG_PROD_SUS=1
+				#FAZER O PROD"SUS
+				#zenity --info --text="You pressed \"Yes\"!"
+				#POSICIONAR O CURSOR NA LINHA DE COMANDO
+				MOVECURSOR 22 06
+				#limpar o que estiver lá
+				X "EraseEOF"
+				ENTER
+				STRING "PROD#SUS"
+				ENTER
+				echo "$now PROD#SUS AUTOMÁTICO ENVIADO" >> XRC_LOG.txt
+				sleep 5
+				FIND "***"
+				if [ $? == 1 ] ; then
+					ENTER
+					echo "$now PROD#SUS encontrado *** e dado ENTER" >> XRC_LOG.txt
+					echo $(PRINTSCREEN) >> XRC_LOG.txt
+				else
+					zenity --info --text="$now MTP VERIFIQUE: PROD#SUS enviado corretamente? interrompido? continue de onde ficou, esta macro vai esperar 5 minutos para a operação ter tempo de introduzir comandos nesta consola."
+					echo "$now PROD#SUS sem ***, entrou em espera 5min" >> XRC_LOG.txt
+					echo $(PRINTSCREEN) >> XRC_LOG.txt
+					sleep 60*5
+					echo "$now PROD#SUS sem ***, saiu da espera 5min" >> XRC_LOG.txt
+					echo $(PRINTSCREEN) >> XRC_LOG.txt
+				fi
+			fi
+		fi
+	fi
 	
 	# fazer find no ecrã a procura das strings em stringa[]
 	#echo "listar o array"
